@@ -9,9 +9,3 @@ __pycache__/
 .env.*
 !*.env.example
 .pytest_cache/
-
-# Archived iOS build artifacts (sources kept under archive/ios/)
-archive/ios/**/build/
-archive/ios/**/DerivedData/
-archive/ios/**/xcuserdata/
-archive/ios/**/*.xcuserstate

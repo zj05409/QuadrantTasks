@@ -21,8 +21,6 @@ PWA (static/)  --Bearer-->  FastAPI (server/)  -->  tasks.json
 - **冲突**：按任务 `updatedAt` 最后写入获胜；`deleted: true` 为墓碑
 - **流量**：前台约 45s 条件 GET（304）；仅本地有改动时 PUT
 
-原 iOS/Widget 工程见 [`archive/ios/`](archive/ios/)。
-
 ## 本地开发
 
 ```bash
@@ -60,5 +58,4 @@ static/    PWA
 tests/     pytest
 deploy/    systemd / nginx
 scripts/   package / remote-install
-archive/   归档的 iOS 工程
 ```
