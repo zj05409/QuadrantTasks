@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1419" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="四象限" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <title>四象限任务</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1>四象限任务</h1>
+        <p id="syncStatus" class="sync-status">本地</p>
+      </div>
+      <div class="top-actions">
+        <button type="button" id="btnSync" class="ghost" title="立即同步">同步</button>
+        <button type="button" id="btnSettings" class="ghost" title="设置">设置</button>
+        <button type="button" id="btnAdd" class="primary" title="新建">＋</button>
+      </div>
+    </header>
+
+    <section class="stats" id="stats">
+      <span>进行中 0</span>
+      <span>已完成 0</span>
+    </section>
+
+    <main id="board" class="board"></main>
+  </div>
+
+  <!-- Detail overlay -->
+  <div id="detail" class="sheet hidden" aria-hidden="true">
+    <div class="sheet-panel">
+      <header class="sheet-head">
+        <button type="button" id="btnBack" class="ghost">← 返回</button>
+        <h2 id="detailTitle">象限</h2>
+        <button type="button" id="btnAddInDetail" class="primary">＋</button>
+      </header>
+      <div id="detailBody" class="sheet-body"></div>
+    </div>
+  </div>
+
+  <!-- Edit sheet -->
+  <div id="editor" class="sheet hidden" aria-hidden="true">
+    <div class="sheet-panel narrow">
+      <header class="sheet-head">
+        <button type="button" id="btnCancelEdit" class="ghost">取消</button>
+        <h2 id="editorTitle">新建任务</h2>
+        <button type="button" id="btnSaveEdit" class="primary">保存</button>
+      </header>
+      <form id="editForm" class="sheet-body form">
+        <label>标题
+          <input id="fieldTitle" type="text" required maxlength="200" placeholder="要做什么" autocomplete="off" />
+        </label>
+        <label>备注
+          <textarea id="fieldNote" rows="3" maxlength="2000" placeholder="可选"></textarea>
+        </label>
+        <fieldset>
+          <legend>所属象限</legend>
+          <div id="quadrantPicker" class="q-picker"></div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div id="settings" class="sheet hidden" aria-hidden="true">
+    <div class="sheet-panel narrow">
+      <header class="sheet-head">
+        <button type="button" id="btnCloseSettings" class="ghost">关闭</button>
+        <h2>同步设置</h2>
+        <span></span>
+      </header>
+      <div class="sheet-body form">
+        <label>同步地址
+          <input id="fieldSyncUrl" type="url" placeholder="https://42.193.252.30/quadrant" />
+        </label>
+        <label>访问令牌（每个浏览器单独保存）
+          <input id="fieldToken" type="text" placeholder="粘贴同一令牌" autocomplete="off" spellcheck="false" />
+        </label>
+        <p class="hint">Safari / Firefox / Chrome 设置互不共享，都要填同一地址与令牌。平时约每 45 秒轻量检查（无变更返回 304）；只有本地改动过才上传，后台标签不轮询。</p>
+        <div class="row">
+          <button type="button" id="btnSaveSettings" class="primary wide">保存并同步</button>
+        </div>
+        <div class="row">
+          <button type="button" id="btnForceRefresh" class="ghost wide">强制刷新客户端（iOS 桌面图标适用）</button>
+        </div>
+        <div class="row">
+          <button type="button" id="btnExport" class="ghost wide">导出 JSON</button>
+          <button type="button" id="btnImport" class="ghost wide">导入 JSON</button>
+          <input id="importFile" type="file" accept="application/json,.json" hidden />
+        </div>
+        <p id="settingsMsg" class="hint"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+[project]
+name = "quadrant-tasks-web"
+version = "1.1.0"
+description = "Eisenhower matrix PWA with self-hosted JSON sync"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

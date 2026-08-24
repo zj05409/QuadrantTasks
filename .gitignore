@@ -1,0 +1,17 @@
+data/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+**/._*
+*.tmp
+.env
+.env.*
+!*.env.example
+.pytest_cache/
+
+# Archived iOS build artifacts (sources kept under archive/ios/)
+archive/ios/**/build/
+archive/ios/**/DerivedData/
+archive/ios/**/xcuserdata/
+archive/ios/**/*.xcuserstate

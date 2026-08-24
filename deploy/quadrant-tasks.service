@@ -1,0 +1,18 @@
+[Unit]
+Description=QuadrantTasks PWA sync service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/quadrant-tasks
+EnvironmentFile=/etc/quadrant-tasks.env
+ExecStart=/opt/quadrant-tasks/.venv/bin/uvicorn server.app:app --host 127.0.0.1 --port 18765 --proxy-headers
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
