@@ -140,3 +140,20 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.28);
   color: var(--text); font-size: 0.82rem; line-height: 1.4;
 }
+
+.account-line { margin: 0 0 14px; font-size: 0.9rem; color: var(--text); }
+.msg { color: var(--text); word-break: break-all; min-height: 1em; }
+.signup { margin: 14px 0 4px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: 12px; }
+.signup summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; margin-bottom: 4px; }
+.signup[open] summary { margin-bottom: 12px; }
+
+:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+.card:focus-visible { outline-offset: 0; }
+@media (hover: hover) {
+  .card:hover { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+  .preview-row:hover span:last-child { text-decoration: line-through; color: var(--muted); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sheet:not(.hidden) .sheet-panel { animation: sheet-in 160ms ease-out; }
+  @keyframes sheet-in { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+}

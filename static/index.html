@@ -79,16 +79,29 @@
         <span></span>
       </header>
       <div class="sheet-body form">
+        <p id="accountLine" class="account-line"></p>
         <label>同步地址
-          <input id="fieldSyncUrl" type="url" placeholder="https://42.193.252.30/quadrant" />
+          <input id="fieldSyncUrl" type="url" inputmode="url" placeholder="https://example.com/quadrant" autocomplete="off" spellcheck="false" />
         </label>
-        <label>访问令牌（每个浏览器单独保存）
-          <input id="fieldToken" type="text" placeholder="粘贴同一令牌" autocomplete="off" spellcheck="false" />
+        <label>访问令牌（每人一个，每个浏览器单独保存）
+          <input id="fieldToken" type="password" placeholder="粘贴你的令牌" autocomplete="off" spellcheck="false" />
         </label>
-        <p class="hint">Safari / Firefox / Chrome 设置互不共享，都要填同一地址与令牌。平时约每 45 秒轻量检查（无变更返回 304）；只有本地改动过才上传，后台标签不轮询。</p>
+        <p class="hint">留空即为纯本地模式。同一个人在多台设备填同一令牌即可同步；不同的人用各自的令牌，数据互相隔离。平时约每 45 秒轻量检查（无变更返回 304），只有本地改动才上传。</p>
         <div class="row">
           <button type="button" id="btnSaveSettings" class="primary wide">保存并同步</button>
         </div>
+        <details id="signupBox" class="signup" hidden>
+          <summary>没有令牌？用邀请码注册</summary>
+          <label>用户名
+            <input id="fieldSignupName" type="text" maxlength="32" placeholder="小写字母 / 数字 / - / _" autocomplete="username" autocapitalize="none" spellcheck="false" />
+          </label>
+          <label>邀请码
+            <input id="fieldInvite" type="password" placeholder="向管理员索取" autocomplete="off" />
+          </label>
+          <div class="row">
+            <button type="button" id="btnSignup" class="ghost wide">注册并使用新账号</button>
+          </div>
+        </details>
         <div class="row">
           <button type="button" id="btnForceRefresh" class="ghost wide">强制刷新客户端（iOS 桌面图标适用）</button>
         </div>
@@ -97,11 +110,14 @@
           <button type="button" id="btnImport" class="ghost wide">导入 JSON</button>
           <input id="importFile" type="file" accept="application/json,.json" hidden />
         </div>
-        <p id="settingsMsg" class="hint"></p>
+        <p id="settingsMsg" class="hint msg" role="status"></p>
+        <div id="settingsTips" class="hint"></div>
+        <p id="serverInfo" class="hint"></p>
       </div>
     </div>
   </div>
 
+  <script src="config.js"></script>
   <script src="app.js" defer></script>
 </body>
 </html>

@@ -77,3 +77,31 @@ def test_store_roundtrip() -> None:
         )
         assert doc["revision"] == 1
         assert store.get()["tasks"][0]["title"] == "hello"
+
+
+def test_prune_old_tombstones() -> None:
+    from server.store import prune_tombstones
+
+    tasks = merge_task_lists(
+        [],
+        [
+            {"id": "old", "updatedAt": "2020-01-01T00:00:00Z", "deleted": True},
+            {"id": "new", "updatedAt": utc_now_iso(), "deleted": True},
+            {"id": "live", "updatedAt": "2020-01-01T00:00:00Z", "deleted": False},
+        ],
+    )
+    assert sorted(t["id"] for t in prune_tombstones(tasks)) == ["live", "new"]
+
+
+def test_title_truncated() -> None:
+    merged = merge_task_lists([], [{"id": "1", "title": "x" * 500, "updatedAt": utc_now_iso()}])
+    assert len(merged[0]["title"]) == 200
+
+
+def test_store_picks_up_external_edits() -> None:
+    with tempfile.TemporaryDirectory() as td:
+        path = Path(td) / "tasks.json"
+        store = TaskStore(path)
+        assert store.get()["revision"] == 0
+        TaskStore(path).merge_put([{"id": "x", "title": "ext", "updatedAt": utc_now_iso()}])
+        assert store.get()["tasks"][0]["title"] == "ext"

@@ -1,0 +1,55 @@
+name: Deploy PWA to GitHub Pages
+
+# Publishes static/ as a standalone front end. Tasks stay in the browser
+# (local mode) unless a sync server is configured:
+#   Settings → Secrets and variables → Actions → Variables →
+#   QUADRANT_SYNC_URL = https://your-server/quadrant
+# The server must list this Pages origin in QUADRANT_CORS_ORIGINS.
+
+on:
+  push:
+    branches: [main]
+    paths: ["static/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble site
+        env:
+          SYNC_URL: ${{ vars.QUADRANT_SYNC_URL }}
+        run: |
+          mkdir -p _site
+          cp -r static/. _site/
+          # JSON-encode the URL so any value is a safe JS string literal.
+          url_json=$(python3 -c 'import json, os; print(json.dumps(os.environ.get("SYNC_URL", "").strip().rstrip("/")))')
+          printf 'window.QUADRANT_CONFIG = { defaultSyncUrl: %s };\n' "$url_json" > _site/config.js
+          # Bust the service worker cache on every deploy.
+          sed -i "s/quadrant-shell-v[0-9]*/quadrant-shell-${GITHUB_SHA::8}/" _site/sw.js
+          touch _site/.nojekyll
+          cat _site/config.js
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

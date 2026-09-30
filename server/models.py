@@ -35,3 +35,8 @@ class TaskDocument(BaseModel):
 class TasksPayload(BaseModel):
     tasks: List[Dict[str, Any]] = Field(default_factory=list)
     mode: Literal["merge", "replace"] = "merge"
+
+
+class RegisterPayload(BaseModel):
+    name: str = Field(min_length=1, max_length=32)
+    inviteCode: str = Field(min_length=1, max_length=200)
