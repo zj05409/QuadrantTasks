@@ -89,7 +89,7 @@ ssh tencent-superhealth 'sudo nginx -T 2>/dev/null | grep -n "server_name\|liste
 
 ```bash
 # 若确认现有 443 server 有 include snippets 习惯，再按实际路径调整
-scp web/deploy/nginx-quadrant.conf tencent-superhealth:/tmp/nginx-quadrant.conf
+scp deploy/nginx-quadrant.conf tencent-superhealth:/tmp/nginx-quadrant.conf
 ssh tencent-superhealth 'bash -s' <<'EOF'
 set -euo pipefail
 # 示例：若站点主配置支持 include，请改成真实路径；否则请手动粘贴 location
@@ -113,11 +113,39 @@ curl -sS -o /dev/null -w '%{http_code}\n' https://42.193.252.30/quadrant/
 
 ---
 
-## 4. 客户端
+## 4. 多用户 / GitHub Pages（可选）
+
+新建用户（以 ubuntu 身份运行，服务无需重启）：
+
+```bash
+ssh tencent-superhealth 'cd /opt/quadrant-tasks && QUADRANT_DATA_DIR=/var/lib/quadrant-tasks .venv/bin/python -m server.admin add alice'
+```
+
+开启邀请码自助注册、允许 GitHub Pages 前端跨域访问：
+
+```bash
+CORS_ORIGINS=https://zj05409.github.io INVITE_CODE='长随机串' \
+  HOST=tencent-superhealth bash scripts/remote-install.sh
+```
+
+（或手动在 `/etc/quadrant-tasks.env` 里加 `QUADRANT_CORS_ORIGINS` / `QUADRANT_INVITE_CODE` 后
+`sudo systemctl restart quadrant-tasks`。）Nginx 的 `location /quadrant/` 里建议加上
+`client_max_body_size 4m;`，见 [nginx-quadrant.conf](nginx-quadrant.conf)。
+
+验证 CORS：
+
+```bash
+curl -sSI -X OPTIONS https://42.193.252.30/quadrant/api/tasks \
+  -H 'Origin: https://zj05409.github.io' -H 'Access-Control-Request-Method: GET' | grep -i access-control
+```
+
+---
+
+## 5. 客户端
 
 1. 浏览器打开 `https://42.193.252.30/quadrant/`  
 2. 设置 → 同步地址：`https://42.193.252.30/quadrant`  
-3. 令牌：与 `/etc/quadrant-tasks.env` 中相同  
+3. 令牌：你自己的用户令牌（或 `/etc/quadrant-tasks.env` 里的旧 `QUADRANT_TOKEN`）  
 4. iOS：Safari → 分享 → 添加到主屏幕  
 
 四端重复上述配置即可。
@@ -137,4 +165,4 @@ sudo nginx -t && sudo systemctl reload nginx
 EOF
 ```
 
-数据在 `/var/lib/quadrant-tasks/tasks.json`，删目录前请先备份。
+数据在 `/var/lib/quadrant-tasks/`（`tasks.json` 为旧单用户数据，`users.json` + `users/<name>/` 为多用户），删目录前请先备份。
